@@ -10,9 +10,12 @@ import time
 import uuid
 
 from flask import Flask, request
+from flask_cors import CORS
 from pymongo import MongoClient
 
 app = Flask(__name__)
+# Insecure! Let's not do this forever :D
+cors = CORS(app)
 
 BASE_PATH = os.path.abspath('.')
 event_handlers = {}
@@ -30,9 +33,9 @@ def handle_event(event_type):
 @handle_event('cell_execute')
 def execute_test(event):
     event_payload = event['payload']
-    if not all([key in event_payload for key in ['username', 'notebook_key', 'question_key', 'code', 'output']]):
+    if not all([key in event_payload for key in ['username', 'notebook_key', 'answer_key', 'code', 'output']]):
         return {'status': 'not-ok'}
-    file_path = os.path.abspath(os.path.join(BASE_PATH, event_payload['notebook_key'], event_payload['question_key']))
+    file_path = os.path.abspath(os.path.join(BASE_PATH, event_payload['notebook_key'], event_payload['answer_key']))
     if not file_path.startswith(BASE_PATH):
         # Directory traversal attack!
         # FIXME: Make these statuses actually understandable!
@@ -52,7 +55,11 @@ def write_event(event):
     """
     Writes the event out to a file, as atomically as possible.
     """
-    client.thw.events.insert_one(event)
+    print(repr(event))
+    # OMG, pymongo modifies the data you pass it! WTF PYMONGO
+    # Shallow copy is ok, since pymongo doesn't reach into objects and change
+    # them
+    client.thw.events.insert_one(event.copy())
 
 
 def make_event(event_type, event_payload):
@@ -69,13 +76,19 @@ def dispatch_event(event):
     write_event(event)
     if event_type in event_handlers:
         return event_handlers[event_type](event)
+    return {}
 
 
 @app.route('/receive/<string:event_type>', methods=['POST'])
 def receive(event_type):
     event_payload = request.get_json(force=True)
     event = make_event(event_type, event_payload)
-    return json.dumps(dispatch_event(event))
+    ret = {
+        'response': dispatch_event(event),
+        'event': event
+    }
+    print(repr(ret))
+    return json.dumps(ret)
 
 if __name__ == '__main__':
     app.run(debug=True)
