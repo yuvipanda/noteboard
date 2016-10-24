@@ -10,11 +10,14 @@ import time
 import uuid
 
 from flask import Flask, request
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
 BASE_PATH = os.path.abspath('.')
 event_handlers = {}
+
+client = MongoClient('localhost', 27017)
 
 
 def handle_event(event_type):
@@ -49,9 +52,7 @@ def write_event(event):
     """
     Writes the event out to a file, as atomically as possible.
     """
-    # FIXME: Use something less lame than O_APPEND
-    with open('events', 'a') as f:
-        f.write(json.dumps(event) + '\n')
+    client.thw.events.insert_one(event)
 
 
 def make_event(event_type, event_payload):
