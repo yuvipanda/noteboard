@@ -17,7 +17,6 @@ define([
         var that = this;
         if(this.cell.metadata.answer_key) {
             send_event('cell_execute',{
-                username: 'yuvipanda',
                 notebook_key: jupyter.notebook.metadata.notebook_key,
                 answer_key: this.cell.metadata.answer_key,
                 code: this.cell.get_text(),
@@ -29,6 +28,16 @@ define([
         return this._handle_output(msg);
     };
 
+    function get_user_name() {
+        var base_url = utils.get_body_data('baseUrl');
+        if (base_url.indexOf('/user/') !== -1) {
+            // We're in a hub!
+            // Assume we're going to be like, /something/user/UserName/
+            return base_url.split('/').pop();
+        } else {
+            return 'local-testing-user';
+        }
+    }
     function set_result_status(is_correct, output_area) {
         var sign = output_area.prompt_overlay.children('i.result-icon');
         if (sign.length == 0) {
@@ -53,6 +62,7 @@ define([
 
     function send_event(event_type, payload) {
         var url = 'http://localhost:5000/receive/' + event_type;
+        payload['username'] = get_user_name();
         return $.ajax({
             type: 'POST',
             url: url,
