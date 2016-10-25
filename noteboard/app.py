@@ -126,5 +126,16 @@ def receive(event_type):
     print(repr(ret))
     return json.dumps(ret)
 
+@app.route('/board/<string:notebook_key>')
+def show_board(notebook_key):
+    answers = client.thw.answers.find({'notebook_key': notebook_key})
+    board = {}
+    for answer in answers:
+        user = board.get(answer['username'], {})
+        user[answer['answer_key']] = answer['time_from_start']
+        board[answer['username']] = user
+    return json.dumps(board)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
