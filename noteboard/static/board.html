@@ -1,0 +1,56 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+          <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script src="board.js"></script>
+        <script type="text/underscore-template" id="score-template">
+
+
+        </script>
+    </head>
+    <body>
+    <nav class="navbar navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">The Hacker Within - Python Olympics</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+      <div class="row">
+          <form class="form-inline col-md-9 col-md-offset-3">
+              <div class="form-group">
+                  <label for="notebok">Notebook</label>
+                  <input type="text" class="form-control" id="notebook">
+              </div>
+              <button id="get-scoreboard" type="submit" class="btn btn-default">Get scoreboard</button>
+          </form>
+
+          <div>
+              <table id="scoreboard" class="table table-striped">
+                  <thead>
+                      <th>Rank</th>
+                      <th>Username</th>
+                      <th>Problems Solved</th>
+                      <th>Time</th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+
+          </div>
+      </div>
+
+    </div><!-- /.container -->
+    </body>
+</html>
