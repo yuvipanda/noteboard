@@ -27,7 +27,7 @@ function display_board(raw_data) {
         });
     });
     scoreboard = _.sortBy(scoreboard, function(item) {
-        return item.solved * 1000000 + item.longest;
+        return -(item.solved * 1000000 + item.longest);
     });
     $('#scoreboard tbody').empty();
     var rank = 0;
