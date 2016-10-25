@@ -20,7 +20,7 @@ cors = CORS(app)
 BASE_PATH = os.path.abspath('.')
 event_handlers = {}
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('localhost', 27017, connect=False)
 
 
 def handle_event(event_type):
