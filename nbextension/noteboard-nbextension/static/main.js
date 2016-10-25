@@ -61,7 +61,7 @@ define([
     }
 
     function send_event(event_type, payload) {
-        var url = 'http://localhost:5000/receive/' + event_type;
+        var url = 'http://' + window.location.hostname + ':5000/receive/' + event_type;
         payload['username'] = get_user_name();
         return $.ajax({
             type: 'POST',
