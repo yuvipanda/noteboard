@@ -33,7 +33,7 @@ define([
         if (base_url.indexOf('/user/') !== -1) {
             // We're in a hub!
             // Assume we're going to be like, /something/user/UserName/
-            return base_url.split('/').pop();
+            return base_url.split('/')[2];
         } else {
             return 'local-testing-user';
         }
