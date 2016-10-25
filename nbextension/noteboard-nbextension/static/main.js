@@ -25,6 +25,15 @@ define([
                 handle_execute_result(that, data);
             });
         }
+        if (!this.cell.metadata.history) {
+            this.cell.metadata.history = [];
+        }
+        this.cell.metadata.history.push({
+            timestamp: Math.floor(Date.now() / 1000),
+            code: this.cell.get_text(),
+            output: msg.content.text
+        });
+
         return this._handle_output(msg);
     };
 
