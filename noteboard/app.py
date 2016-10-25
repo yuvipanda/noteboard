@@ -30,6 +30,42 @@ def handle_event(event_type):
     return decorated_f
 
 
+@handle_event('notebook_opened')
+def notebook_started(event):
+    event_payload = event['payload']
+    query = {
+        'username': event_payload['username'],
+        'notebook_key': event_payload['notebook_key']
+    }
+    if not client.thw.notebook_starts.find_one(query):
+        # First time notebook opening!
+        data = query.copy()
+        data['started_at'] = event['timestamp']
+        data['event'] = event
+        client.thw.notebook_starts.insert_one(data)
+
+
+@handle_event('correct_answer')
+def correct_answer(event):
+    event_payload = event['payload']['original']['payload']
+    notebook_query = {
+        'username': event_payload['username'],
+        'notebook_key': event_payload['notebook_key']
+    }
+    notebook_started = client.thw.notebook_starts.find_one(notebook_query)
+    answer_query = {
+        'username': event_payload['username'],
+        'notebook_key': event_payload['notebook_key'],
+        'answer_key': event_payload['answer_key'],
+    }
+    if not client.thw.answers.find_one(answer_query):
+        data = answer_query.copy()
+        data.update({
+            'event': event,
+            'time_from_start': event['timestamp'] - notebook_started['started_at']
+        })
+        client.thw.answers.insert_one(data)
+
 @handle_event('cell_execute')
 def execute_test(event):
     event_payload = event['payload']
